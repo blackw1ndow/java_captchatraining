@@ -1,5 +1,6 @@
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.*;
 
 public class InputBox extends JPanel {
     private static final Color PANEL_BG = new Color(18, 18, 18);
@@ -33,7 +34,24 @@ public class InputBox extends JPanel {
         field.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE, 2),
                 BorderFactory.createEmptyBorder(6, 8, 6, 8)));
-        field.addActionListener(e -> onAccept.run());
+        field.addKeyListener(new KeyAdapter() {
+            private boolean enterPressed = false;
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    enterPressed = true;
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && enterPressed) {
+                    enterPressed = false;
+                    onAccept.run();
+                }
+            }
+        });
 
         JPanel fieldRow = new JPanel(new BorderLayout(6, 0));
         fieldRow.setOpaque(false);
